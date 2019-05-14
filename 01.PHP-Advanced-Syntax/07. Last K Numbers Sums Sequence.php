@@ -2,9 +2,8 @@
 $n = readline();
 $k = readline();
 $numbers = [];
-        $numbers[0] = 1;
+$numbers[0] = 1;
         for ($i = 1; $i < $n; $i++) {
-
     for ($a = 0; $a < $k; $a++) {
         if($i < $k){
             for ($b = 1; $b <= $i; $b++) {
@@ -17,9 +16,7 @@ $numbers = [];
             }
                     break;
                 }
-
     }
-
         }
 
         echo implode(" ",$numbers);
