@@ -21,8 +21,10 @@ while(true) {
 
     $points = $data[2];
     $teamInfo[$team][$player] = $points;
-
+    arsort($teamInfo[$team]);
 }
+
+
 
 foreach ($teamInfo as $key => $value) {
 
@@ -30,11 +32,10 @@ foreach ($teamInfo as $key => $value) {
 
         $teamScore[$key] = 0;
     }
-foreach ($value as $score){
-    uksort($value, function ($k1, $k2){
-        return $k2 <=> $k1;
-    });
-}
+
+
+
+
     foreach($value as $k => $v) {
 
         $teamScore[$key] += $v;
@@ -48,4 +49,4 @@ foreach ($teamScore as $key => $value) {
     echo $key . " => " . $value . "\n";
     echo "Most points scored by " . key($teamInfo[$key]) . "\n";
 }
-print_r($teamInfo);
+
