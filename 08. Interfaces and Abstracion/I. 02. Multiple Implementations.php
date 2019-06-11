@@ -65,6 +65,11 @@ class Citizen implements Person,Identifiable,Birthable
     {
         $this->birthDate = $birthDate;
     }
+
+    public function getBirthdate()
+    {
+       return $this->birthDate;
+    }
 }
 $name = readline();
 $age = readline();
