@@ -11,6 +11,10 @@ class Game implements GameInterface
     {
         $this->galaxy = $galaxy;
     }
+
+    /**
+     *
+     */
     public function start()
     {
         $this->galaxy->addStarSystem(self::STAR_SYSTEM_ARTEMIS_TAU, new StarSystem(self::STAR_SYSTEM_ARTEMIS_TAU));
@@ -41,9 +45,11 @@ class Game implements GameInterface
                 return $upperChar;
             }, $cmd);
             $cmd = ucfirst($cmd);
-            $cmdInstance = $cmd($this->galaxy);
+            $cmd = $cmd . "Command";
+            $cmdInstance = new $cmd($this->galaxy);
+
             try {
-                $result = $cmdInstance->execute;
+                $result = $cmdInstance->execute($tokens);
                 echo $result . PHP_EOL;
             } catch (\Exception $e) {
                 echo $e->getMessage() . PHP_EOL;
@@ -486,6 +492,127 @@ class KineticBarrier extends EnhancementAbstract
     public function giveBonus(ShipInterface $ship)
     {
         $ship->setShields($ship->getShields() + self::BONUS_SHIELDS);
+    }
+}
+interface Executable
+{
+    public function execute(array $args = []): string;
+}
+abstract class CommandAbstract implements Executable
+{
+    protected $galaxy;
+
+    public function __construct(GalaxyInterface $galaxy)
+    {
+        $this->galaxy = $galaxy;
+    }
+
+
+}
+class AttackCommand extends CommandAbstract
+{
+
+    public function execute(array $args = []): string
+    {
+        array_shift($args);
+        $attackerName = array_shift($args);
+        $defenderName = array_shift($args);
+
+        $attacker = $this->galaxy->getShip($attackerName);
+        $defender = $this->galaxy->getShip($defenderName);
+
+        if (!$attacker->isAlive() || !$defender->isAlive()) {
+            throw new \Exception("Ship is destroyed");
+        }
+
+        if ($attacker->getStarSystem() != $defender->getStarSystem()) {
+            throw new \Exception("No such ship in star system");
+        }
+
+        $attacker->attack($defender);
+
+        $output = "$attackerName attacked $defenderName";
+
+        if (!$defender->isAlive()) {
+            $output .= PHP_EOL . "$defenderName has been destroyed";
+        }
+
+        return $output;
+    }
+}
+class CreateCommand extends CommandAbstract
+{
+
+    /**
+     * @param array $args
+     * @return string
+     * @throws Exception
+     */
+    public function execute(array $args = []): string
+    {
+        array_shift($args);
+        $shipType = array_shift($args);
+        $shipFullType =  $shipType;
+        $shipName = array_shift($args);
+
+        if ($this->galaxy->shipExists($shipName)) {
+            throw new \Exception("Ship with such name already exists");
+        }
+
+        $systemName = array_shift($args);
+        $enhancements = [];
+        foreach ($args as $enhancementName) {
+            $fullName =  $enhancementName;
+            $enhancement = new $fullName();
+            $enhancements[] = $enhancement;
+        }
+
+        $starSystem = $this->galaxy->getStarSystem($systemName);
+        $ship = new $shipFullType($shipName, $starSystem, $enhancements);
+
+        $starSystem->addShip($ship);
+        $this->galaxy->addShip($ship);
+
+        return "Created $shipType $shipName";
+    }
+}
+class PlotJumpCommand extends CommandAbstract
+{
+
+    public function execute(array $args = []): string
+    {
+        array_shift($args);
+        $shipName = array_shift($args);
+        $starSystemName = array_shift($args);
+
+        $starSystem = $this->galaxy->getStarSystem($starSystemName);
+        $ship = $this->galaxy->getShip($shipName);
+
+        if (!$ship->isAlive()) {
+            throw new \Exception('Ship is destroyed');
+        }
+
+        if ($ship->getStarSystem() === $starSystem) {
+            throw new \Exception("Ship is already in $starSystemName");
+        }
+
+        $oldSystem = $ship->getStarSystem();
+
+        $oldSystem->travelTo($shipName, $starSystem);
+
+        return "$shipName jumped from {$oldSystem->getName()} to $starSystemName";
+    }
+}
+class StatusReportCommand extends CommandAbstract
+{
+
+    public function execute(array $args = []): string
+    {
+        array_shift($args);
+        $shipName = array_shift($args);
+        $ship = $this->galaxy->getShip($shipName);
+
+        return $ship . "";
     }
 }
 $game = new Game(new Galaxy());
