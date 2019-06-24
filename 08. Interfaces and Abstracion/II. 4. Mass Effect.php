@@ -49,6 +49,7 @@ class Game implements GameInterface
             $cmdInstance = new $cmd($this->galaxy);
 
             try {
+                /** @var $cmdInstance */
                 $result = $cmdInstance->execute($tokens);
                 echo $result . PHP_EOL;
             } catch (\Exception $e) {
