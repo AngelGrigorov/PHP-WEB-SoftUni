@@ -23,9 +23,9 @@ class DTOValidator
             if(is_numeric($value)){
                 if($value < $min || $value > $max){
                     throw new \Exception("{$fieldName} must be between $min and $max!");
-                }else{
-                    throw new \Exception("Please enter number!");
                 }
+            }else{
+                throw new \Exception("Please enter number!");
             }
         }
 
