@@ -33,21 +33,21 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         {% if app.user %}
-                        <li>
-                        <a href="{{ path('user_profile') }}" class="navbar-brand">
-                        My Profile
-                        </a>
-                        </li>
-                        <li>
-                        <a href="{{ path('article_create') }}" class="navbar-brand">
-                        Create Article
-                        </a>
-                        </li>
-                        <li>
-                        <a href="{{ path('security_logout') }}" class="navbar-brand">
-                        Logout
-                        </a>
-                        </li>
+{#                        <li>#}
+{#                        <a href="{{ path('user_profile') }}" class="navbar-brand">#}
+{#                        My Profile#}
+{#                        </a>#}
+{#                        </li>#}
+{#                        <li>#}
+{#                        <a href="{{ path('article_create') }}" class="navbar-brand">#}
+{#                        Create Article#}
+{#                        </a>#}
+{#                        </li>#}
+{#                        <li>#}
+{#                        <a href="{{ path('security_logout') }}" class="navbar-brand">#}
+{#                        Logout#}
+{#                        </a>#}
+{#                        </li>#}
                         {% else %}
                         <li>
                         <a href="{{ path('user_register') }}">
