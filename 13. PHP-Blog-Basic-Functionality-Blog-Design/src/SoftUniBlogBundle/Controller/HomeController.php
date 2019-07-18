@@ -4,15 +4,15 @@ namespace SoftUniBlogBundle\Controller;
 
 use SoftUniBlogBundle\Entity\Article;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class DefaultController extends Controller
+class HomeController extends Controller
 {
     /**
      * @Route("/", name="blog_index")
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function indexAction()
     {

@@ -4,9 +4,11 @@ namespace SoftUniBlogBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use SoftUniBlogBundle\Entity\Article;
+use SoftUniBlogBundle\Entity\User;
 use SoftUniBlogBundle\Form\ArticleType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ArticleController extends Controller
@@ -17,7 +19,7 @@ class ArticleController extends Controller
      * @Route("/article/create", name="article_create")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function create(Request $request)
@@ -40,7 +42,7 @@ if($form->isSubmitted()){
     /**
      * @Route("/article/{id}", name="article_view")
      * @param $id
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function viewArticle($id)
     {
@@ -55,12 +57,18 @@ if($form->isSubmitted()){
      *
      * @param $id
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function editArticle($id, Request $request)
     {
         $article = $this->getDoctrine()->getRepository(Article::class)->find($id);
         if($article === null){
+            return $this->redirectToRoute('blog_index');
+        }
+        $currentUser = $this->getUser();
+        /** @var User $currentUser */
+        /** @var Article $article */
+        if(!$currentUser->isAuthor($article) && !$currentUser->isAdmin()){
             return $this->redirectToRoute('blog_index');
         }
         $form = $this->createForm(ArticleType::class,$article);
@@ -81,12 +89,18 @@ if($form->isSubmitted()){
      *
      * @param $id
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function deleteArticle($id, Request $request)
     {
         $article = $this->getDoctrine()->getRepository(Article::class)->find($id);
         if($article === null){
+            return $this->redirectToRoute('blog_index');
+        }
+        $currentUser = $this->getUser();
+        /** @var User $currentUser */
+        /** @var Article $article */
+        if(!$currentUser->isAuthor($article) && !$currentUser->isAdmin()){
             return $this->redirectToRoute('blog_index');
         }
         $form = $this->createForm(ArticleType::class,$article);

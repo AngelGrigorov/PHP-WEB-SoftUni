@@ -2,6 +2,7 @@
 
 namespace SoftUniBlogBundle\Controller;
 
+use SoftUniBlogBundle\Entity\Role;
 use SoftUniBlogBundle\Entity\User;
 use SoftUniBlogBundle\Form\UserType;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,10 +22,16 @@ class UsersController extends Controller
      $user = new User();
 $form = $this->createForm(UserType::class, $user);
 $form->handleRequest($request);
-    if($form->isSubmitted()){
+    if($form->isSubmitted() && $form->isValid()){
         $password = $this->get('security.password_encoder')
             ->encodePassword($user, $user->getPassword());
         $user->setPassword($password);
+
+$roleRepository = $this->getDoctrine()->getRepository(Role::class);
+$userRole = $roleRepository->findOneBy(['name' => 'ROLE_USER']);
+        /** @var Role $userRole */
+        $user->addRole($userRole);
+
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);
         $em->flush();

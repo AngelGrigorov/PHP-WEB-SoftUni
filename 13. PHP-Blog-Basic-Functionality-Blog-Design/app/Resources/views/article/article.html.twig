@@ -19,8 +19,10 @@
 
                     <footer>
                         <div class="pull-right">
+                            {% if app.getUser() and (app.getUser().isAuthor(article) or app.getUser().isAdmin()) %}
                             <a class="btn btn-success btn-xs" href="{{ path('article_edit', {'id': article.id}) }}">Edit</a>
                             <a class="btn btn-danger btn-xs" href="{{ path('article_delete', {'id': article.id}) }}">Delete</a>
+                            {% endif %}
                             <a class="btn btn-default btn-xs" href="{{ path('blog_index') }}">back &raquo;</a>
                         </div>
                     </footer>
