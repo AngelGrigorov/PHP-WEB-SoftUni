@@ -38,4 +38,9 @@ class PDODatabase implements DatabaseInterface
         $last_id = $this->pdo->lastInsertId();
         return $last_id;
     }
+
+    public function getErrorInfo(): array
+    {
+        // TODO: Implement getErrorInfo() method.
+    }
 }
